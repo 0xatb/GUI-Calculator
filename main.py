@@ -4,9 +4,8 @@ from tkinter import font
 import ast
 import operator as op
 
-# -------------------------
+
 # Safe expression evaluator
-# -------------------------
 # Only allow a small set of arithmetic operations.
 _ALLOWED_OPERATORS = {
     ast.Add: op.add,
@@ -20,12 +19,8 @@ _ALLOWED_OPERATORS = {
 }
 
 def safe_eval(expr: str):
-    """
-    Safely evaluate a math expression using ast parsing.
-    Supports + - * / % ** unary +/-, parentheses, integers and floats.
-    Raises ValueError for invalid syntax or unsupported nodes.
-    """
-    # Replace caret ^ with pow operator (user-friendly)
+   
+   
     expr = expr.replace('^', '**')
     try:
         node = ast.parse(expr, mode='eval')
@@ -64,9 +59,8 @@ def safe_eval(expr: str):
         return int(result)
     return result
 
-# -------------------------
 # GUI
-# -------------------------
+
 class Calculator(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -131,7 +125,7 @@ class Calculator(tk.Tk):
         for (text, r, c, cmd, colspan) in [(t,r,c,cb,1) if len(tpl:=t) else None for t,r,c,cb,*rest in btns]:
             pass  # keep structure for readability
 
-        # build buttons (explicit loop for colspan handling)
+        # build buttons 
         for item in btns:
             text, r, c, cmd = item[0], item[1], item[2], item[3]
             colspan = item[4] if len(item) > 4 else 1
@@ -139,7 +133,7 @@ class Calculator(tk.Tk):
                           command=cmd, relief='raised')
             b.grid(row=r, column=c, columnspan=colspan, sticky='nsew', padx=3, pady=3)
 
-        # make columns expand equally (keeps buttons square-ish)
+        # make columns expand equally 
         for i in range(4):
             self.grid_columnconfigure(i, weight=1)
 
