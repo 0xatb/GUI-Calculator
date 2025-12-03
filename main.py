@@ -4,9 +4,10 @@ from tkinter import font
 import ast
 import operator as op
 
-
+# -------------------------
 # Safe expression evaluator
-# Only allow a small set of arithmetic operations.
+# -------------------------
+
 _ALLOWED_OPERATORS = {
     ast.Add: op.add,
     ast.Sub: op.sub,
@@ -19,8 +20,8 @@ _ALLOWED_OPERATORS = {
 }
 
 def safe_eval(expr: str):
-   
-   
+    
+    
     expr = expr.replace('^', '**')
     try:
         node = ast.parse(expr, mode='eval')
@@ -43,9 +44,9 @@ def safe_eval(expr: str):
             if op_type in _ALLOWED_OPERATORS:
                 return _ALLOWED_OPERATORS[op_type](operand)
             raise ValueError(f"Unsupported unary operator: {op_type}")
-        if isinstance(node, ast.Num):  # Python <3.8
+        if isinstance(node, ast.Num):  
             return node.n
-        if isinstance(node, ast.Constant):  # Python 3.8+
+        if isinstance(node, ast.Constant):  
             if isinstance(node.value, (int, float)):
                 return node.value
             raise ValueError("Constants other than numbers not allowed")
@@ -54,13 +55,14 @@ def safe_eval(expr: str):
         raise ValueError(f"Unsupported expression: {type(node)}")
 
     result = _eval(node)
-    # Convert results like 5.0 -> 5 for nicer display
+    
     if isinstance(result, float) and result.is_integer():
         return int(result)
     return result
 
+# -------------------------
 # GUI
-
+# -------------------------
 class Calculator(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -125,7 +127,7 @@ class Calculator(tk.Tk):
         for (text, r, c, cmd, colspan) in [(t,r,c,cb,1) if len(tpl:=t) else None for t,r,c,cb,*rest in btns]:
             pass  # keep structure for readability
 
-        # build buttons 
+        # build buttons (explicit loop for colspan handling)
         for item in btns:
             text, r, c, cmd = item[0], item[1], item[2], item[3]
             colspan = item[4] if len(item) > 4 else 1
@@ -133,7 +135,7 @@ class Calculator(tk.Tk):
                           command=cmd, relief='raised')
             b.grid(row=r, column=c, columnspan=colspan, sticky='nsew', padx=3, pady=3)
 
-        # make columns expand equally 
+        # make columns expand equally (keeps buttons square-ish)
         for i in range(4):
             self.grid_columnconfigure(i, weight=1)
 
@@ -176,4 +178,3 @@ class Calculator(tk.Tk):
 if __name__ == "__main__":
     app = Calculator()
     app.mainloop()
-
